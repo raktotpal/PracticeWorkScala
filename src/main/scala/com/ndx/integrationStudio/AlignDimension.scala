@@ -178,122 +178,113 @@ object AlignDimension {
     for (correction <- correctedMap.keys) {
       val scoresRDD = bagOfWords.map(x => (x._2, consineTextSimilarity(x._2, correction)))
 
-//      println("Correction : " + correction)
+      //      println("Correction : " + correction)
 
       val maxKey = scoresRDD.takeOrdered(1)(Ordering[Double].reverse.on(_._2))(0) //._1
       var classlabel = bagOfWords.map(x => (x._2, x._1)).lookup(maxKey._1).head
 
-//      println("Classlabel : " + classlabel)
+      //      println("Classlabel : " + classlabel)
 
       classlabel = if (classlabel.equalsIgnoreCase("DIM_NAME")) "MISC" else classlabel
 
       recommendArray = new Array[String]((correctedMap.get(correction).size))
-      
+
       for (lines <- (correctedMap.get(correction).get)) {
-//        println(lines)
+        //        println(lines)
         recommendArray :+ (lines._2 + "," + classlabel + "," + (maxKey._2 * 100) + "\n")
       }
     }
 
     recommendArray
   }
-  
-  		val conf = new SparkConf().setAppName("DimensionRecommendation").setMaster("local")
-        val sc = new SparkContext(conf)
-        val sqlContext = new SQLContext(sc)
 
-    def main(args: Array[String]): Unit = {
-        System.setProperty("hadoop.home.dir", "E:\\winutils")
+  val conf = new SparkConf().setAppName("DimensionRecommendation").setMaster("local")
+  val sc = new SparkContext(conf)
+  val sqlContext = new SQLContext(sc)
 
-       
+  def main(args: Array[String]): Unit = {
+    System.setProperty("hadoop.home.dir", "E:\\winutils")
 
-        //    val bagOfWordsFilePath = args(0)
-        //    val headerFilePath = args(1)
-        //
-        //    val bagOfWordsFile = sc.textFile(bagOfWordsFilePath)
-        //    val headerFile = sc.textFile(headerFilePath)
-        //
-        //    load(bagOfWordsFile)
-        //
-        //    val corrected = headerFile.map { line =>
-        //      val splits = line.split(",")
-        //      val normalised = splits(5).toLowerCase(Locale.ENGLISH)
-        //      val correction = correct(normalised);
-        //
-        //      (line, correction)
-        //    }
-        //
-        //    val bagOfWords = bagOfWordsFile.map { line =>
-        //      val splits = line.split(",")
-        //      (splits(0), splits(1))
-        //    }
-        //
-        //    val correctedMap = corrected.map(row => (row._2, row._1)).groupBy(row => row._1).collect().toMap
-        //
-        //    val recommendArray = getRecommendation(bagOfWords, correctedMap)
-        //    
-        //    recommendArray.foreach(println)
+    //    val bagOfWordsFilePath = args(0)
+    //    val headerFilePath = args(1)
+    //
+    //    val bagOfWordsFile = sc.textFile(bagOfWordsFilePath)
+    //    val headerFile = sc.textFile(headerFilePath)
+    //
+    //    load(bagOfWordsFile)
+    //
+    //    val corrected = headerFile.map { line =>
+    //      val splits = line.split(",")
+    //      val normalised = splits(5).toLowerCase(Locale.ENGLISH)
+    //      val correction = correct(normalised);
+    //
+    //      (line, correction)
+    //    }
+    //
+    //    val bagOfWords = bagOfWordsFile.map { line =>
+    //      val splits = line.split(",")
+    //      (splits(0), splits(1))
+    //    }
+    //
+    //    val correctedMap = corrected.map(row => (row._2, row._1)).groupBy(row => row._1).collect().toMap
+    //
+    //    val recommendArray = getRecommendation(bagOfWords, correctedMap)
+    //    
+    //    recommendArray.foreach(println)
 
-        val recommendArray = Array[String]("21,91,db1,179,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,80","21,93,db2,183,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,90","21,94,db2,186,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,65","21,95,db2,191,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,80","21,91,db1,177,FACT,FACT,92,db2,181,FACT,FACT,100","21,93,db2,185,FACT,FACT,92,db2,181,FACT,FACT,68","21,94,db2,187,FACT,FACT,92,db2,181,FACT,FACT,75","21,95,db2,190,FACT,FACT,92,db2,181,FACT,FACT,100")
+    val recommendArray = Array[String]("21,91,db1,179,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,80", "21,93,db2,183,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,90", "21,94,db2,186,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,65", "21,95,db2,191,PRODUCT,PRODUCT,92,db2,182,PRODUCT,PRODUCT,80", "21,91,db1,177,FACT,FACT,92,db2,181,FACT,FACT,100", "21,93,db2,185,FACT,FACT,92,db2,181,FACT,FACT,68", "21,94,db2,187,FACT,FACT,92,db2,181,FACT,FACT,75", "21,95,db2,190,FACT,FACT,92,db2,181,FACT,FACT,100")
 
-         
+    // Generate the schema based on the string of schema
+    val schema = StructType(List(StructField("project_id", StringType),
+      StructField("dataset_id", StringType),
+      StructField("dataset_name", StringType),
+      StructField("dimension_id", StringType),
+      StructField("dimension_name", StringType),
+      StructField("prediction", StringType),
+      StructField("AlignedDataSetID", StringType),
+      StructField("AlignedDataSetName", StringType),
+      StructField("AlignedDimID", StringType),
+      StructField("AlignedDimName", StringType),
+      StructField("prediction_", StringType),
+      StructField("ConfidenceLevel", StringType)))
 
-        // Generate the schema based on the string of schema
-        val schema = StructType(List(StructField("project_id", StringType),
-            StructField("dataset_id", StringType),
-            StructField("dataset_name", StringType),
-            StructField("dimension_id", StringType),
-            StructField("dimension_name", StringType),
-            StructField("prediction", StringType),
-            StructField("AlignedDataSetID", StringType),
-            StructField("AlignedDataSetName", StringType),
-            StructField("AlignedDimID", StringType),
-            StructField("AlignedDimName", StringType),
-            StructField("prediction_", StringType),
-            StructField("ConfidenceLevel", StringType)))
+    // Convert records of the RDD (people) to Rows
+    val rowArray = recommendArray.map(_.split(","))
+      .map(p => Row(p(0).trim, p(1).trim, p(2).trim, p(3).trim, p(4).trim, p(5).trim, p(6).trim, p(7).trim, p(8).trim, p(9).trim))
+      .toSeq
 
-        // Convert records of the RDD (people) to Rows
-        val rowArray = recommendArray.map(_.split(","))
-            .map(p => Row(p(0).trim, p(1).trim, p(2).trim, p(3).trim, p(4).trim, p(5).trim, p(6).trim, p(7).trim, p(8).trim, p(9).trim))
-            .toSeq
+    // Creating RDD[Row]
+    val rowRDD = sc.makeRDD(rowArray)
 
-        // Creating RDD[Row]
-        val rowRDD = sc.makeRDD(rowArray)
+    val dataFrame = sqlContext.createDataFrame(rowRDD, schema)
 
-        val dataFrame = sqlContext.createDataFrame(rowRDD, schema)
+    dataFrame.registerTempTable("totalDF")
 
-        dataFrame.registerTempTable("totalDF")
+    val res = sqlContext.sql("DESCRIBE totalDF");
 
-        val res = sqlContext.sql("DESCRIBE totalDF");
+    val query = "SELECT AlignedDimID FROM totalDF"
 
+    val res1 = sqlContext.sql(query)
 
-        val query = "SELECT AlignedDimID FROM totalDF"
-            
-        val res1 = sqlContext.sql(query)
-        
-        res1.foreach(row => println(row.getString(0)))
-         
-//        res1.foreach(row => 
-//
-//        executeSQL(row.getString(0))
-//        
-//        )
-        
-        
-        
-            
-//        val res2 = sqlContext.sql(query)
-//        
-//        res1.foreach(println)
-        
+    res1.foreach(row => println(row.getString(0)))
 
-    }
-    
-    def executeSQL(dimensionID: String) : Unit = {
-        val mySQL = "SELECT * FROM totalDF WHERE AlignedDimID = \"" + dimensionID + "\""
-        
-        val df1 = sqlContext.sql(mySQL)
-        
-        df1.foreach(println)
-    }
+    //        res1.foreach(row => 
+    //
+    //        executeSQL(row.getString(0))
+    //        
+    //        )
+
+    //        val res2 = sqlContext.sql(query)
+    //        
+    //        res1.foreach(println)
+
+  }
+
+  def executeSQL(dimensionID: String): Unit = {
+    val mySQL = "SELECT * FROM totalDF WHERE AlignedDimID = \"" + dimensionID + "\""
+
+    val df1 = sqlContext.sql(mySQL)
+
+    df1.foreach(println)
+  }
 }

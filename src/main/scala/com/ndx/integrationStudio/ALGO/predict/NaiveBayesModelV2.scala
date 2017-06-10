@@ -153,7 +153,7 @@ object NaiveBayesModelV2 {
 
         if (accuracy > 0.0) {
           predictionResult += (category._1 -> accuracy.toString())
-          intemediateResult = intemediateResult + "\nDoc ID : "+testData.collect()(i) + ", Category : " + category._1 + ", Category Index : " + category._2 + ", Accuraccy : " + accuracy
+          intemediateResult = intemediateResult + "\nDoc ID : " + testData.collect()(i) + ", Category : " + category._1 + ", Category Index : " + category._2 + ", Accuraccy : " + accuracy
 
           predictionResult.foreach(println)
           println(intemediateResult)

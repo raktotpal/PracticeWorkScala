@@ -1,4 +1,4 @@
-package com.internal.scala.tricky
+package com.internal.spark.rdd
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext

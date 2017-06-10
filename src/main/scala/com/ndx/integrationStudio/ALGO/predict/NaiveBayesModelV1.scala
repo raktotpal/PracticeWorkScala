@@ -51,7 +51,7 @@ object NaiveBayesModelV1 {
       case TestLabeledData(label, text) => (label, tokenize(text))
     }
 
-   /* val hashingTF = new HashingTF(dim)
+    /* val hashingTF = new HashingTF(dim)
     val tf = tokenizedData.map { case (label, text) => (label, hashingTF.transform(text)) }
 
     val idf = new IDF().fit(tf.map(_._2))
@@ -59,10 +59,9 @@ object NaiveBayesModelV1 {
     val labbeledRDD = tf.map {
       case (label, rawFeatures) => LabeledPoint(label, idf.transform(rawFeatures))
     }*/
-    
+
     val hashingTF = new HashingTF(dim)
     val labbeledRDD = tokenizedData.map { case (label, text) => LabeledPoint(label, hashingTF.transform(text)) }
-
 
     labbeledRDD.foreach(println)
     (labbeledRDD)
@@ -102,7 +101,7 @@ object NaiveBayesModelV1 {
       case LabeledData(catagory, text, label) => (label, tokenize(text))
     }
 
-/*  val hashingTF = new HashingTF(dim)
+    /*  val hashingTF = new HashingTF(dim)
     val tf = raw.map { case (label, text) => (label, hashingTF.transform(text)) }
 
     val idf = new IDF().fit(tf.map(_._2))
@@ -114,8 +113,7 @@ object NaiveBayesModelV1 {
 
     val hashingTF = new HashingTF(dim)
     val labbeledRDD = raw.map { case (label, text) => LabeledPoint(label.toInt, hashingTF.transform(text)) }
-    
-    
+
     // defining model
 
     val model = NaiveBayes.train(labbeledRDD, lambda = 1.0, modelType = "multinomial")

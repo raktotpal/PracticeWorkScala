@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio.test
+package com.internal.spark.test
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
@@ -19,63 +19,63 @@ import org.apache.spark.sql.Row
  *
  */
 object VLD_XCOPY {
-    case class exc_no_data_ostore() extends Exception
+  case class exc_no_data_ostore() extends Exception
 
-    val conf = new SparkConf().setAppName("VLD_XCOPY").setMaster("local[4]")
-    val sc = new SparkContext(conf)
-    val sqlContext = new SQLContext(sc)
-    val hiveContext = new HiveContext(sc)
+  val conf = new SparkConf().setAppName("VLD_XCOPY").setMaster("local[4]")
+  val sc = new SparkContext(conf)
+  val sqlContext = new SQLContext(sc)
+  val hiveContext = new HiveContext(sc)
 
-    val gv_ac_table_suffix: String = null //IT; vld_te_periodicities.get_tablesuffix(gv_nc_periodset);
-    var gv_ac_all_dtgroups_array: Array[String] = null
-    val gv_nc_periodid: Double = 0 // 1877.0
-    val gv_ac_ostore: String = null // 1600078159
-    val gv_ac_dstore: String = null
+  val gv_ac_table_suffix: String = null //IT; vld_te_periodicities.get_tablesuffix(gv_nc_periodset);
+  var gv_ac_all_dtgroups_array: Array[String] = null
+  val gv_nc_periodid: Double = 0 // 1877.0
+  val gv_ac_ostore: String = null // 1600078159
+  val gv_ac_dstore: String = null
 
-    def Load_All_DTGroups(p_ac_cstore: String) { // param = 1600078159
-        val v_rec_dtgroups_cur: String = null
-        val v_nc_dtgroup_pos: Long = 0
-        var v_ac_dtgroup: String = null
-        var i: Int = 0
-        val v_rec_dtgroup: String = null
+  def Load_All_DTGroups(p_ac_cstore: String) { // param = 1600078159
+    val v_rec_dtgroups_cur: String = null
+    val v_nc_dtgroup_pos: Long = 0
+    var v_ac_dtgroup: String = null
+    var i: Int = 0
+    val v_rec_dtgroup: String = null
 
-        // gv_ac_all_dtgroups_array.delete;
-        // gv_ac_valid_dtgroups_array.delete;
+    // gv_ac_all_dtgroups_array.delete;
+    // gv_ac_valid_dtgroups_array.delete;
 
-        i = 1
-        if (null == gv_ac_table_suffix) {
-            val queryToPickFromRawData = s"""SELECT ac_dtgroup FROM VLDRAWDATA_IT_RAWDATA WHERE nc_periodid=$gv_nc_periodid AND ac_nshopid=$p_ac_cstore GROUP BY ac_dtgroup"""
-            val resPickFromRawData = hiveContext.sql(queryToPickFromRawData)
-            gv_ac_all_dtgroups_array = new Array[String](resPickFromRawData.count.toInt)
-            for (v_rec_dtgroups_cur <- resPickFromRawData) {
-                v_ac_dtgroup = v_rec_dtgroups_cur.getString(1)
-                // gv_ac_all_dtgroups_array(i).ac_word = v_ac_dtgroup;
-                gv_ac_all_dtgroups_array(i) = v_ac_dtgroup;
-                i = i + 1
-            }
-        }
-
-        val ac_dtgroup_query = s"""SELECT ac_dtgroup FROM VLDRAWDATA_IT_RAWDATA  
-        						where nc_periodid=$gv_nc_periodid 
-        						AND ac_nshopid=$p_ac_cstore GROUP BY ac_dtgroup"""
-        val ac_dtgroup_res = hiveContext.sql(ac_dtgroup_query)
-        gv_ac_all_dtgroups_array = new Array[String](ac_dtgroup_res.count.toInt)
-        for (v_rec_dtgroups_cur <- ac_dtgroup_res) {
-            v_ac_dtgroup = v_rec_dtgroups_cur.getString(1)
-            gv_ac_all_dtgroups_array(i) = v_ac_dtgroup
-            i = i + 1;
-        }
+    i = 1
+    if (null == gv_ac_table_suffix) {
+      val queryToPickFromRawData = s"""SELECT ac_dtgroup FROM VLDRAWDATA_IT_RAWDATA WHERE nc_periodid=$gv_nc_periodid AND ac_nshopid=$p_ac_cstore GROUP BY ac_dtgroup"""
+      val resPickFromRawData = hiveContext.sql(queryToPickFromRawData)
+      gv_ac_all_dtgroups_array = new Array[String](resPickFromRawData.count.toInt)
+      for (v_rec_dtgroups_cur <- resPickFromRawData) {
+        v_ac_dtgroup = v_rec_dtgroups_cur.getString(1)
+        // gv_ac_all_dtgroups_array(i).ac_word = v_ac_dtgroup;
+        gv_ac_all_dtgroups_array(i) = v_ac_dtgroup;
+        i = i + 1
+      }
     }
 
-    def Insert_ML_Specfc(p_ac_dtgroup: String) { // param: VOLUMETRIC
-        val v_ac_procname = "Insert_ML_Specfc"
-        var v_infotxt: String = null
-        var v_nc_num: Long = 0
-        var v_ac_sql: String = null
+    val ac_dtgroup_query = s"""SELECT ac_dtgroup FROM VLDRAWDATA_IT_RAWDATA  
+        						where nc_periodid=$gv_nc_periodid 
+        						AND ac_nshopid=$p_ac_cstore GROUP BY ac_dtgroup"""
+    val ac_dtgroup_res = hiveContext.sql(ac_dtgroup_query)
+    gv_ac_all_dtgroups_array = new Array[String](ac_dtgroup_res.count.toInt)
+    for (v_rec_dtgroups_cur <- ac_dtgroup_res) {
+      v_ac_dtgroup = v_rec_dtgroups_cur.getString(1)
+      gv_ac_all_dtgroups_array(i) = v_ac_dtgroup
+      i = i + 1;
+    }
+  }
 
-        if (null == gv_ac_table_suffix) {
-            if (p_ac_dtgroup.equals("VOLUMETRIC") || p_ac_dtgroup.equals("VOL_RCC")) {
-                val insertSelectQuery = s"""INSERT INTO VLDPROCESS_IT_GT_RAWDATA 
+  def Insert_ML_Specfc(p_ac_dtgroup: String) { // param: VOLUMETRIC
+    val v_ac_procname = "Insert_ML_Specfc"
+    var v_infotxt: String = null
+    var v_nc_num: Long = 0
+    var v_ac_sql: String = null
+
+    if (null == gv_ac_table_suffix) {
+      if (p_ac_dtgroup.equals("VOLUMETRIC") || p_ac_dtgroup.equals("VOL_RCC")) {
+        val insertSelectQuery = s"""INSERT INTO VLDPROCESS_IT_GT_RAWDATA 
 		                      (nc_periodid, ac_nshopid, ac_cref, ac_crefsuffix, ac_dtgroup,
 		                       nc_hash_signature, ac_creftype, ac_xcodegr, ac_xcodegrmatch,
 		                       f_nan_key, nc_conv, ac_crefstatus, ac_subtag, nc_slot1, nc_slot2,
@@ -94,10 +94,10 @@ object VLD_XCOPY {
 		                AND r.ac_dtgroup = $p_ac_dtgroup 
 		                AND r.f_nan_key = n.f_nan_key 
 		                AND n.nc_moduleid = m.nc_moduleid"""
-                val insertSelectResDF = hiveContext.sql(insertSelectQuery)
-                v_nc_num = insertSelectResDF.count
-            } else {
-                val insertSelectQuery = s"""INSERT INTO VLDPROCESS_IT_GT_RAWDATA 
+        val insertSelectResDF = hiveContext.sql(insertSelectQuery)
+        v_nc_num = insertSelectResDF.count
+      } else {
+        val insertSelectQuery = s"""INSERT INTO VLDPROCESS_IT_GT_RAWDATA 
                       (nc_periodid, ac_nshopid, ac_cref, ac_crefsuffix, ac_dtgroup,
                        nc_hash_signature, ac_creftype, ac_xcodegr, ac_xcodegrmatch,
                        f_nan_key, nc_conv, ac_crefstatus, ac_subtag, nc_slot1, nc_slot2,
@@ -116,11 +116,11 @@ object VLD_XCOPY {
 		                AND r.ac_dtgroup = $p_ac_dtgroup 
 		                AND r.f_nan_key = n.f_nan_key 
 		                AND n.nc_moduleid = m.nc_moduleid"""
-                val insertSelectResDF = hiveContext.sql(insertSelectQuery)
-                v_nc_num = insertSelectResDF.count
-            }
-        } else {
-            v_ac_sql = s"""INSERT INTO VLDPROCESS_IT_GT_RAWDATA 
+        val insertSelectResDF = hiveContext.sql(insertSelectQuery)
+        v_nc_num = insertSelectResDF.count
+      }
+    } else {
+      v_ac_sql = s"""INSERT INTO VLDPROCESS_IT_GT_RAWDATA 
 	                 (nc_periodid, ac_nshopid, ac_cref, ac_crefsuffix, ac_dtgroup,
 	                 nc_hash_signature, ac_creftype, ac_xcodegr, ac_xcodegrmatch,
 	                 f_nan_key, nc_conv, ac_crefstatus, ac_subtag, nc_slot1, nc_slot2,
@@ -139,16 +139,16 @@ object VLD_XCOPY {
                   AND r.ac_dtgroup = $p_ac_dtgroup 
                   AND r.f_nan_key = n.f_nan_key 
                   AND n.nc_moduleid = m.nc_moduleid"""
-            val v_ac_sql_resDF = hiveContext.sql(v_ac_sql)
-            v_nc_num = v_ac_sql_resDF.count
-        }
-
-        v_infotxt = s"""<< $v_ac_procname >> << $p_ac_dtgroup >> $v_nc_num Record(s) Inserted Successfully in GT_Rawdata Table."""
-
-        if (v_nc_num < 1) {
-            throw new exc_no_data_ostore
-        }
-
-        // vld_process.infomessage (v_infotxt);
+      val v_ac_sql_resDF = hiveContext.sql(v_ac_sql)
+      v_nc_num = v_ac_sql_resDF.count
     }
+
+    v_infotxt = s"""<< $v_ac_procname >> << $p_ac_dtgroup >> $v_nc_num Record(s) Inserted Successfully in GT_Rawdata Table."""
+
+    if (v_nc_num < 1) {
+      throw new exc_no_data_ostore
+    }
+
+    // vld_process.infomessage (v_infotxt);
+  }
 }

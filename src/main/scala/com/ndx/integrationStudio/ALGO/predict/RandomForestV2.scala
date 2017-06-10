@@ -1,21 +1,20 @@
 package com.ndx.integrationStudio.ALGO.predict
 
-
 /**
  * Usage :-
- * 
+ *
  *   spark-submit \
  *   --master <local or cluster or client> \
  *   --class com.nielsen.ndx.RandomForestV2 \
  *   <ApplicationJar file Path>
  *   <Arguments for application
- *  
- *		args(0) => LibSVM File path of Train Data as input
+ *
+ * 		args(0) => LibSVM File path of Train Data as input
  *    args(1) => LibSVM File path of Test Dataas output
  *    args(2) => File path of bagOfWords from Training Data
- *    
+ *
  * 		>
- * 
+ *
  */
 import org.apache.spark.mllib.tree.RandomForest
 import org.apache.spark.mllib.tree.model.RandomForestModel
@@ -33,8 +32,6 @@ import com.codahale.metrics.Metric
 
 object RandomForestV2 {
 
-
-
   def trainModel(labeledTrainData: RDD[LabeledPoint]): RandomForestModel = {
 
     val numClasses = labeledTrainData.count().toInt
@@ -48,7 +45,7 @@ object RandomForestV2 {
     (model)
   }
 
-  def predictModel(labeledTestData: RDD[LabeledPoint], model: RandomForestModel): RDD[(Double,Double)] = {
+  def predictModel(labeledTestData: RDD[LabeledPoint], model: RandomForestModel): RDD[(Double, Double)] = {
 
     val predictions = labeledTestData.map(p => {
       val prediction = model.predict(p.features)
@@ -59,17 +56,17 @@ object RandomForestV2 {
     println("*** Done ***")
     predictions
   }
-  
-  def getCategory(testData:RDD[LabeledPoint],bagOfWords:Map[String,Int],predictions:Map[Double,Double]):RDD[(Double,String)] ={
-    
-    val predictedLabels = testData.map { row => 
+
+  def getCategory(testData: RDD[LabeledPoint], bagOfWords: Map[String, Int], predictions: Map[Double, Double]): RDD[(Double, String)] = {
+
+    val predictedLabels = testData.map { row =>
       val labelOfTestFile = row.label
       val predictionsValue = predictions.get(labelOfTestFile).get
-      
-      val categoryOfTestFile = bagOfWords.filter(elem => elem._2 == (predictionsValue - 1).toInt).toList//.map(elem => elem._1).toList
-     
-       (labelOfTestFile,categoryOfTestFile.toString)
-      }
+
+      val categoryOfTestFile = bagOfWords.filter(elem => elem._2 == (predictionsValue - 1).toInt).toList //.map(elem => elem._1).toList
+
+      (labelOfTestFile, categoryOfTestFile.toString)
+    }
     predictedLabels
   }
 
@@ -77,25 +74,25 @@ object RandomForestV2 {
     val sparkConf = new SparkConf().setAppName("FeatureExtractor").setMaster("local")
 
     val sc = new SparkContext(sparkConf)
-    
+
     val trainLibSVMFilePath = args(0)
     val testLibSVMFilePath = args(1)
     val bagOfWordFilePath = args(2)
 
     val trainingData = MLUtils.loadLibSVMFile(sc, trainLibSVMFilePath)
     val testData = MLUtils.loadLibSVMFile(sc, testLibSVMFilePath)
-    
+
     val bagOfWords = sc.textFile(bagOfWordFilePath).map { row =>
-        val splitted = row.split(",")
-        (splitted(0), splitted(1).toInt)
-      }.collect().toMap
+      val splitted = row.split(",")
+      (splitted(0), splitted(1).toInt)
+    }.collect().toMap
 
     val model = trainModel(trainingData)
 
     val predictions = predictModel(testData, model).collect().toMap
-    
-    val predictedLabels = getCategory(testData,bagOfWords,predictions)
-    
+
+    val predictedLabels = getCategory(testData, bagOfWords, predictions)
+
     model.toDebugString
     predictedLabels.foreach(println)
   }

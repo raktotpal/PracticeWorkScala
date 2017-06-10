@@ -7,66 +7,66 @@ import scala.collection.mutable.HashMap
 import scala.util.control.Breaks._
 
 object Prototype5 {
-    val sc = new SparkConf().setAppName("Align-Dimensions").setMaster("local")
-    val sparkContext = new SparkContext(sc)
-    val sqlContext = new SQLContext(sparkContext)
+  val sc = new SparkConf().setAppName("Align-Dimensions").setMaster("local")
+  val sparkContext = new SparkContext(sc)
+  val sqlContext = new SQLContext(sparkContext)
 
-    val delimiterChar = ","
+  val delimiterChar = ","
 
-    def main(args: Array[String]): Unit = {
-        System.setProperty("hadoop.home.dir", "E:\\winutils")
+  def main(args: Array[String]): Unit = {
+    System.setProperty("hadoop.home.dir", "E:\\winutils")
 
-        val bagOfDimensions = loadPresetValues()
+    val bagOfDimensions = loadPresetValues()
 
-        val testRDD = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\CSVData.csv")
-        val headerLine = testRDD.take(1)(0)
+    val testRDD = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\CSVData.csv")
+    val headerLine = testRDD.take(1)(0)
 
-        val headerSet = headerLine.split(delimiterChar)
+    val headerSet = headerLine.split(delimiterChar)
 
-        val appendingHeader: StringBuffer = new StringBuffer
+    val appendingHeader: StringBuffer = new StringBuffer
 
-        for (eachColumnName <- headerSet) {
-            if (bagOfDimensions.contains(eachColumnName)) {
-                appendingHeader.append(eachColumnName)
-            } else {
-                var isFound = false
-                breakable {
-                    for (eachEntry <- bagOfDimensions) {
-                        if (eachEntry._2.contains(eachColumnName)) {
-                            appendingHeader.append(eachEntry._1).append(delimiterChar)
-                            isFound = true
-                            break
-                        }
-                    }
-                }
-                if (!isFound) {
-                    appendingHeader.append(delimiterChar)
-                }
+    for (eachColumnName <- headerSet) {
+      if (bagOfDimensions.contains(eachColumnName)) {
+        appendingHeader.append(eachColumnName)
+      } else {
+        var isFound = false
+        breakable {
+          for (eachEntry <- bagOfDimensions) {
+            if (eachEntry._2.contains(eachColumnName)) {
+              appendingHeader.append(eachEntry._1).append(delimiterChar)
+              isFound = true
+              break
             }
+          }
         }
-
-        appendingHeader.deleteCharAt(appendingHeader.lastIndexOf(delimiterChar))
-
-        testRDD.map(x =>
-            if (x.equalsIgnoreCase(headerLine)) {
-                appendingHeader.toString()
-            } else { x }).saveAsTextFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\CSVDataOUT")
+        if (!isFound) {
+          appendingHeader.append(delimiterChar)
+        }
+      }
     }
 
-    def loadPresetValues(): HashMap[String, Seq[String]] = {
-        val keyValSeparator = ":"
-        val valSeparator = ","
-        val presetValues = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\BagOfHeaders.txt").toArray
+    appendingHeader.deleteCharAt(appendingHeader.lastIndexOf(delimiterChar))
 
-        val presetBag = new HashMap[String, Seq[String]]()
+    testRDD.map(x =>
+      if (x.equalsIgnoreCase(headerLine)) {
+        appendingHeader.toString()
+      } else { x }).saveAsTextFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\CSVDataOUT")
+  }
 
-        for (eachEntry <- presetValues) {
-            val eachLine = eachEntry.split(keyValSeparator)
+  def loadPresetValues(): HashMap[String, Seq[String]] = {
+    val keyValSeparator = ":"
+    val valSeparator = ","
+    val presetValues = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\BagOfHeaders.txt").toArray
 
-            presetBag.+=((eachLine(0), eachLine(1).split(valSeparator)))
-        }
+    val presetBag = new HashMap[String, Seq[String]]()
 
-        return presetBag
+    for (eachEntry <- presetValues) {
+      val eachLine = eachEntry.split(keyValSeparator)
+
+      presetBag.+=((eachLine(0), eachLine(1).split(valSeparator)))
     }
+
+    return presetBag
+  }
 
 }
