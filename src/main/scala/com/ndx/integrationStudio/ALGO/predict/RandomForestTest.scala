@@ -15,7 +15,7 @@ object RandomForestTest {
 
     // Load and parse the data file.
     val data =
-      MLUtils.loadLabeledData(sparkContext, "C:\\Users\\Raktotpal\\Desktop\\TrainData.txt")
+      MLUtils.loadLabeledPoints(sparkContext, "C:\\Users\\Raktotpal\\Desktop\\TrainData.txt")
     // Split data into training/test sets
     val splits = data.randomSplit(Array(0.7, 0.3))
     val (trainingData, testData) = (splits(0), splits(1))

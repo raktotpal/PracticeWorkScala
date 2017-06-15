@@ -19,7 +19,7 @@ object Prototype1 {
 
     //val trainedRDD = sparkContext.textFile("C:\\Users\\Raktotpal\\Desktop\\TrainData.txt").toArray
 
-    val testRDD = sparkContext.textFile("C:\\Users\\Raktotpal\\Desktop\\testMyData.txt").toArray
+    val testRDD = sparkContext.textFile("C:\\Users\\Raktotpal\\Desktop\\testMyData.txt").collect()
 
     val seqObj = Seq()
 
@@ -42,7 +42,8 @@ object Prototype1 {
     val ngram = new NGram().setN(2).setInputCol("words").setOutputCol("ngrams")
     val ngramDataFrame = ngram.transform(wordDataFrame)
 
-    val nGrammedRDD = ngramDataFrame.map(_.getAs[Stream[String]]("ngrams").toList)
+    val nGrammedRDD = ngramDataFrame.rdd
+    //.map(_.getAs[Stream[String]]("ngrams").toList)
 
     val vv = Seq(
       ("1", nGrammedRDD.first()(0)),
@@ -72,7 +73,7 @@ object Prototype1 {
     val rescaledData = idfModel.transform(featurizedData)
 
     rescaledData.printSchema
-    rescaledData.select("label", "sentence", "words", "features").foreach(println)
+    rescaledData.select("label", "sentence", "words", "features").foreach(x => println(x))
 
   }
 

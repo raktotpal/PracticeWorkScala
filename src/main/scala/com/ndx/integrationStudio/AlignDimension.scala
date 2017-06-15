@@ -285,6 +285,6 @@ object AlignDimension {
 
     val df1 = sqlContext.sql(mySQL)
 
-    df1.foreach(println)
+    df1.foreach(x => println(x))
   }
 }

@@ -23,7 +23,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.linalg.Vectors
-import com.typesafe.config.ConfigException.Parse
+//import com.typesafe.config.ConfigException.Parse
 import scala.util.Random
 import scala.collection.mutable.StringBuilder
 

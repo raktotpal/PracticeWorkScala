@@ -19,7 +19,7 @@ object TestNGram {
     val sparkContext = new SparkContext(sc)
     val sqlContext = new SQLContext(sparkContext)
 
-    val arrayRDD = sparkContext.textFile("C:\\Users\\Raktotpal\\Desktop\\DimensionsData.txt").toArray
+    val arrayRDD = sparkContext.textFile("C:\\Users\\Raktotpal\\Desktop\\DimensionsData.txt").collect()
 
     val vv = ("Customer Name", arrayRDD(0))
     val v = Seq(
@@ -39,7 +39,7 @@ object TestNGram {
     val hashingTF = new HashingTF().setInputCol("words").setOutputCol("rawFeatures").setNumFeatures(20)
     val featurizedData = hashingTF.transform(wordsData)
 
-    featurizedData.select("rawFeatures", "label").foreach(println)
+    featurizedData.select("rawFeatures", "label").foreach(x => println(x))
 
     //        val idf = new IDF().setInputCol("rawFeatures").setOutputCol("features")
     //        val idfModel = idf.fit(featurizedData)

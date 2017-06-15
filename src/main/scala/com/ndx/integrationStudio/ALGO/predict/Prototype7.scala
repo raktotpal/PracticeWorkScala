@@ -5,7 +5,8 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.SQLContext
 import scala.collection.mutable.HashMap
 import scala.util.control.Breaks._
-import org.codehaus.jettison.json.JSONObject
+import scala.util.parsing.json.JSONObject
+import org.json.JSONObject
 
 object Prototype7 {
   val sc = new SparkConf().setAppName("Align-Dimensions").setMaster("local")
@@ -59,7 +60,7 @@ object Prototype7 {
   def loadPresetValues(): HashMap[String, Seq[String]] = {
     val keyValSeparator = ":"
     val valSeparator = ","
-    val presetValues = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\BagOfHeaders.txt").toArray
+    val presetValues = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\BagOfHeaders.txt").collect()
 
     val presetBag = new HashMap[String, Seq[String]]()
 
@@ -72,10 +73,10 @@ object Prototype7 {
     return presetBag
   }
 
-  def extractHeaderFromDataSet(schemaPath: String): JSONObject = {
+  def extractHeaderFromDataSet(schemaPath: String): org.json.JSONObject = {
     val schemaFileRDD = sparkContext.textFile(schemaPath).collect().mkString
 
-    val jsonObj = new JSONObject(schemaFileRDD)
+    val jsonObj = new org.json.JSONObject(schemaFileRDD)
 
     println(jsonObj.toString())
 

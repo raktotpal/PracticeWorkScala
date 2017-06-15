@@ -220,7 +220,11 @@ object DfTest {
           //hier.where(dimName + "_HIER_NAME = " + eachHier.getString(0)).select(dimName + "_HIER_LVL", dimName + "_LEVEL_CODE").distinct.orderBy(dimName + "_LEVEL_CODE")
           //.where(hier.col(dimName + "_HIER_NAME") == eachHier)
 
-          hierInfo2.put(eachHier.getString(0), distinctHierDf.select(dimName + "_HIER_LVL", dimName + "_LEVEL_CODE").orderBy(dimName + "_LEVEL_CODE").map(row => row(0).asInstanceOf[String]).collect())
+          //hierInfo2.put(eachHier.getString(0), distinctHierDf.select(dimName + "_HIER_LVL", dimName + "_LEVEL_CODE").orderBy(dimName + "_LEVEL_CODE").map(row => row(0).asInstanceOf[String]).collect())
+          hierInfo2.put(eachHier.getString(0),
+            distinctHierDf.select(dimName + "_HIER_LVL", dimName + "_LEVEL_CODE")
+              .orderBy(dimName + "_LEVEL_CODE").rdd
+              .map(x => x.get(0).toString()).collect())
         }
         hierInfo.put(eachField.name, hierInfo2)
       }

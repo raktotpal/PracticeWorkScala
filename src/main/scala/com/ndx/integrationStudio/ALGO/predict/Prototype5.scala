@@ -56,7 +56,7 @@ object Prototype5 {
   def loadPresetValues(): HashMap[String, Seq[String]] = {
     val keyValSeparator = ":"
     val valSeparator = ","
-    val presetValues = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\BagOfHeaders.txt").toArray
+    val presetValues = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\BagOfHeaders.txt").collect()
 
     val presetBag = new HashMap[String, Seq[String]]()
 

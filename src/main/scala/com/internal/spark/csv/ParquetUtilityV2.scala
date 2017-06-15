@@ -151,7 +151,7 @@ object ParquetUtilityV2 {
     val myRowRDD = fileRDD.map(p => p.split(",", -1)).map(x => Row.fromSeq(x))
 
     val mydf = sqlCtx.createDataFrame(myRowRDD, schema)
-    mydf.saveAsParquetFile(outputPath)
+    mydf.write.save(outputPath)
   }
 
   /**
@@ -185,6 +185,6 @@ object ParquetUtilityV2 {
    * @param outputPath Otput path for the parquet file to be written.
    */
   def pushAsParquet(parsedDF: DataFrame, outputPath: String) {
-    parsedDF.saveAsParquetFile(outputPath)
+    parsedDF.write.save(outputPath)
   }
 }

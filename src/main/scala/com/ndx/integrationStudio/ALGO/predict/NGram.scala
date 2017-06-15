@@ -15,7 +15,7 @@ object NGram {
     val sparkContext = new SparkContext(sc)
     val sqlContext = new SQLContext(sparkContext)
 
-    val arrayRDD = sparkContext.textFile("C:\\Users\\Raktotpal\\Desktop\\sparkTest.txt").toArray
+    val arrayRDD = sparkContext.textFile("C:\\Users\\Raktotpal\\Desktop\\sparkTest.txt").collect()
 
     //        val wordDataFrame = sqlContext.createDataFrame(Seq(
     //            (0, Array("Hi", "I", "heard", "about", "Spark")),
@@ -31,6 +31,7 @@ object NGram {
 
     val ngram = new NGram().setN(2).setInputCol("words").setOutputCol("ngrams")
     val ngramDataFrame = ngram.transform(wordDataFrame)
-    ngramDataFrame.map(_.getAs[Stream[String]]("ngrams").toList).foreach(println)
+
+    //ngramDataFrame.map( x => x.getAs[Stream[String]]("ngrams")).foreach(println)
   }
 }

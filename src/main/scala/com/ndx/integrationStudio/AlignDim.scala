@@ -7,8 +7,8 @@ import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.sql.types.StringType
 import org.apache.spark.sql.Row
-import org.codehaus.jettison.json.JSONObject
-import org.codehaus.jettison.json.JSONArray
+import org.json.JSONObject
+import org.json.JSONArray
 
 object AlignDim {
   val conf = new SparkConf().setAppName("DimensionRecommendation").setMaster("local")
@@ -59,7 +59,8 @@ object AlignDim {
 
     val res1 = sqlContext.sql(query)
 
-    val dimsID = res1.map(row => row.getString(0)).distinct.collect
+    val dimsID = res1.distinct.collect
+    //.map(row => row.getString(0)).distinct.collect
 
     val dimMappingModel = new JSONObject
 

@@ -111,7 +111,7 @@ object ParquetUtility {
    * @param outputPath Output path for the Parquet file.
    */
   def pushAsCSV(parsedDF: DataFrame, isHeader: Boolean, compressCodec: String, outputPath: String) {
-    parsedDF.save(outputPath, "com.databricks.spark.csv")
+    parsedDF.write.format("com.databricks.spark.csv").save(outputPath)
     //                Map("format" -> "com.databricks.spark.csv",
     //                    "codec" -> "org.apache.hadoop.io.compress.GzipCodec",
     //                    "header" -> isHeader.toString,
@@ -125,7 +125,7 @@ object ParquetUtility {
    * @param outputPath Otput path for the parquet file to be written.
    */
   def pushAsParquet(parsedDF: DataFrame, outputPath: String) {
-    parsedDF.saveAsParquetFile(outputPath)
+    parsedDF.write.save(outputPath)
   }
 
   /**
@@ -150,6 +150,6 @@ object ParquetUtility {
     val myRowRDD = fileRDD.map(p => p.split(",", -1)).map(x => Row.fromSeq(x))
 
     val mydf = sqlCtx.createDataFrame(myRowRDD, schema)
-    mydf.saveAsParquetFile(outputPath)
+    mydf.write.save(outputPath)
   }
 }
