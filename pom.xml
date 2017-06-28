@@ -17,6 +17,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.databricks</groupId>
+			<artifactId>spark-avro_${scala.tools.version}</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20170516</version>

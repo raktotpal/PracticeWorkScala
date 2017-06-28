@@ -3,6 +3,7 @@ package com.internal.spark.jdbc
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.Row
 
 object JDBCTest {
   val classes = Seq(
@@ -21,7 +22,11 @@ object JDBCTest {
       "url" -> "jdbc:postgresql://dayrhectod004.enterprisenet.org:5432/intstudioDB?user=ndxis&password=ndx",
       "dbtable" -> dbtable));
 
-    //jdbcDF.foreach(println)
+//    import org.apache.spark.sql.functions._
+//    val ageInINT = udf { (make: String) =>
+//      Integer.parseInt(make.substring(1))
+//    }
+//    jdbcDF.withColumn("age", ageInINT(jdbcDF("age"))).show
   }
 
 }
