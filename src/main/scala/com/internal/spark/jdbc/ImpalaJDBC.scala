@@ -14,7 +14,7 @@ object ImpalaJDBC {
 
   def main(args: Array[String]) {
     val SQL_STATEMENT = "select sid from student limit 5"
-    val IMPALAD_HOST = "dayrhectod010"
+    val IMPALAD_HOST = "XXXX"
     val IMPALAD_JDBC_PORT = "21050";
     val CONNECTION_URL = "jdbc:hive2://" + IMPALAD_HOST + ':' + IMPALAD_JDBC_PORT + "/;auth=noSasl";
     val JDBC_DRIVER_NAME = "org.apache.hive.jdbc.HiveDriver";

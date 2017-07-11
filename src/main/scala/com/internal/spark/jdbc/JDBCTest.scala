@@ -19,7 +19,7 @@ object JDBCTest {
 
   def main(args: Array[String]) {
     val jdbcDF = sqlContext.load("jdbc", Map(
-      "url" -> "jdbc:postgresql://dayrhectod004.enterprisenet.org:5432/intstudioDB?user=ndxis&password=ndx",
+      "url" -> "jdbc:postgresql://XXXX:5432/intstudioDB?user=user&password=pass",
       "dbtable" -> dbtable));
 
 //    import org.apache.spark.sql.functions._
