@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio.ALGO.predict
+package com.test.ml.predict
 
 import org.apache.spark.mllib.util.MLUtils
 import org.apache.spark.mllib.tree.configuration.Strategy

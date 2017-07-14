@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio
+package com.test.ml
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext

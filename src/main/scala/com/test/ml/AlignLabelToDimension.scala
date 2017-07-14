@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio
+package com.test.ml
 import org.apache.spark.{ SparkConf, SparkContext }
 import java.io._
 import com.rockymadden.stringmetric.similarity._

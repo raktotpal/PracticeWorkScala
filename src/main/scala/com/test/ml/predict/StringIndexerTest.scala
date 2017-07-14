@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio.ALGO.predict
+package com.test.ml.predict
 
 import org.apache.spark.ml.feature.StringIndexer
 import org.apache.spark.SparkConf

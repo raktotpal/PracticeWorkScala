@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio.ALGO.predict
+package com.test.ml.predict
 
 import scala.Array.canBuildFrom
 import scala.reflect.runtime.universe

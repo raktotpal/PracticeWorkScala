@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio.ALGO.predict
+package com.test.ml.predict
 
 import scala.reflect.runtime.universe
 import scala.reflect.runtime.universe.TypeTag.Nothing

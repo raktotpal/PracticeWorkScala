@@ -1,12 +1,14 @@
-package com.ndx.integrationStudio.ALGO.predict
+package com.test.ml.predict
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SQLContext
 import scala.collection.mutable.HashMap
 import scala.util.control.Breaks._
+import scala.util.parsing.json.JSONObject
+import org.json.JSONObject
 
-object Prototype5 {
+object Prototype7 {
   val sc = new SparkConf().setAppName("Align-Dimensions").setMaster("local")
   val sparkContext = new SparkContext(sc)
   val sqlContext = new SQLContext(sparkContext)
@@ -17,6 +19,8 @@ object Prototype5 {
     System.setProperty("hadoop.home.dir", "E:\\winutils")
 
     val bagOfDimensions = loadPresetValues()
+
+    val headerSetJSON = extractHeaderFromDataSet("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\GetMetadata.json")
 
     val testRDD = sparkContext.textFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\CSVData.csv")
     val headerLine = testRDD.take(1)(0)
@@ -40,17 +44,17 @@ object Prototype5 {
           }
         }
         if (!isFound) {
-          appendingHeader.append(delimiterChar)
+          appendingHeader.append("MISC").append(delimiterChar)
         }
       }
     }
 
     appendingHeader.deleteCharAt(appendingHeader.lastIndexOf(delimiterChar))
 
-    testRDD.map(x =>
-      if (x.equalsIgnoreCase(headerLine)) {
-        appendingHeader.toString()
-      } else { x }).saveAsTextFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\CSVDataOUT")
+    //        testRDD.map(x =>
+    //            if (x.equalsIgnoreCase(headerLine)) {
+    //                appendingHeader.toString()
+    //            } else { x }).saveAsTextFile("E:\\RPAL\\KproZ\\NIELSEN_INTEGRATION_STUDIO\\data\\CSVDataOUT")
   }
 
   def loadPresetValues(): HashMap[String, Seq[String]] = {
@@ -67,6 +71,16 @@ object Prototype5 {
     }
 
     return presetBag
+  }
+
+  def extractHeaderFromDataSet(schemaPath: String): org.json.JSONObject = {
+    val schemaFileRDD = sparkContext.textFile(schemaPath).collect().mkString
+
+    val jsonObj = new org.json.JSONObject(schemaFileRDD)
+
+    println(jsonObj.toString())
+
+    return jsonObj
   }
 
 }

@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio.ALGO.predict
+package com.test.ml.predict
 
 import java.io.File
 import org.apache.spark.ml.tuning.CrossValidator

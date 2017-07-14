@@ -1,4 +1,4 @@
-package com.internal.spark.ALGO
+package com.test.ml.algo
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext

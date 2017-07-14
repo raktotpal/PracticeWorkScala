@@ -1,4 +1,4 @@
-package com.ndx.integrationStudio.ALGO.predict
+package com.test.ml.predict
 
 import org.apache.spark.ml.feature.{ HashingTF, IDF, Tokenizer }
 import org.apache.spark.SparkConf
