@@ -44,8 +44,8 @@ object DfTest {
     finalData.printSchema
     //println("---------------------------- 4 " + finalData.count)
 
-    finalData.foreach(x => println("------------------------------------>>> " + x))
-
+    //finalData.foreach(x => println("------------------------------------>>> " + x))
+    finalData.show()
   }
 
   def main1(args: Array[String]) {
